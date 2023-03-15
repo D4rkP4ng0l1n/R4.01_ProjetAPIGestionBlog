@@ -1,5 +1,10 @@
 <?php
 	
+    // Utilisateur : Jules - Mdp : Shrek - Role : moderator
+    // Utilisateur : Kevin - Mdp : Oui - Role : publisher
+    // Utilisateur : Loic - Mdp : Mcdo - Role : publisher 
+
+
 	// Import des fonctions pour la création de token
 	include('jwt_utils.php');
 
@@ -22,17 +27,17 @@
         /// Récupération des données envoyées par le Client
         $postedData = file_get_contents('php://input');
         $dataDecode = json_decode($postedData);
-        $req = $linkpdo->prepare('SELECT * FROM utilisateur WHERE nom = :user AND motDePasse = :pwd');
-        $req->execute(array('user'=>$dataDecode->user, 'pwd'=>$dataDecode->pwd));
-        if($req->rowCount() > 0) {
-            $result = $req->fetch();
+        $req = $linkpdo->prepare('SELECT * FROM utilisateur WHERE nom = :user');
+        $req->execute(array('user'=>$dataDecode->user));
+        $result = $req->fetch();
+        if($req->rowCount() > 0 && password_verify($dataDecode->pwd, $result['motDePasse'])) {
             $headers = array('alg'=>'HS256', 'typ'=>'JWT');
             $payload = array('user'=>$result['nom'], 'role'=> $result['role'], 'exp'=>(time() + 3600));
             $jwt = generate_jwt($headers, $payload);
             deliver_response(201, "Generation du token termine", $jwt);
         }
         else {
-       		deliver_response(404, "Utilisateur non trouve", NULL);
+               deliver_response(404, "Utilisateur non trouve", NULL);
         }
         break;
     }
