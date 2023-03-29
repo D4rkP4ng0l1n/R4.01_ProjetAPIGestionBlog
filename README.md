@@ -2,7 +2,7 @@
 
 Etudiants (Groupe B) : CAYROL Jules - RIEUNEAU Clément
 
-Comptes et mot de passe pour utiliser l'application : 
+Comptes et mots de passe pour utiliser l'application : 
   - User : Jules  / Mdp : Shrek / Role : Moderator
   - User : Kevin  / Mdp : Oui   / Role : Publisher
   - User : Loic   / Mdp : Mcdo  / Role : Publisher
