@@ -61,87 +61,89 @@
 		case "POST" :
 			if($authorization == 'publisher') {
 				/// Récupération des données envoyées par le Client
-			$postedData = file_get_contents('php://input');
-			$data = json_decode($postedData);
-			/// Traitement
-			//cas ajout article
-			if(isset($data->contenu) && isset($data->auteur)) {
-				if (empty($data->contenu) || empty($data->auteur)) {
-		        	deliver_response(400, "Données reçues incomplètes", NULL);
-		    	} else {
-	                $req = $linkpdo->prepare('INSERT INTO article (auteur, contenu) VALUES (:auteur, :contenu)');
-				    $req->execute(array('auteur' => $data->auteur, 'contenu' => $data->contenu));
+				$postedData = file_get_contents('php://input');
+				$data = json_decode($postedData);
+				/// Traitement
+				//cas ajout article
+				if(isset($data->contenu) && isset($data->auteur)) {
+					if (empty($data->contenu) || empty($data->auteur)) {
+		        		deliver_response(400, "Données reçues incomplètes", NULL);
+		    		} else {
+	                	$req = $linkpdo->prepare('INSERT INTO article (auteur, contenu) VALUES (:auteur, :contenu)');
+				    	$req->execute(array('auteur' => $data->auteur, 'contenu' => $data->contenu));
 
-				    $req = $linkpdo->prepare('SELECT * FROM article');
-				    $req->execute(array());
-				    $matchingData = $req->fetchAll();
+				    	$req = $linkpdo->prepare('SELECT * FROM article');
+				    	$req->execute(array());
+				    	$matchingData = $req->fetchAll();
 
-				    /// Envoi de la réponse au Client
-				    deliver_response(201, "Article ajoutée", $matchingData);
-	            }
-	        //cas like/dislike article
+						/// Envoi de la réponse au Client
+						deliver_response(201, "Article ajoutée", $matchingData);
+					}
+				//cas like/dislike article
+				} else {
+					if (empty($data->IdArticle) || empty($data->auteur) || empty($data->eval)) {
+						deliver_response(400, "Données reçues incomplètes", NULL, $authorization);
+					} else {
+						$req = $linkpdo->prepare('SELECT * FROM evaluer WHERE IdArticle = :IdArticle AND nom = :nom');
+						$req->execute(array('IdArticle' => $data->IdArticle, 'nom' => $data->auteur));
+
+						//cas like
+						if($data->eval == "Like") {
+							//Ajout du like si l'article n'avait pas été liké ou disliké
+							if($req->rowCount() == 0) {
+								//Nous avons décidés de faire un update dans un POST pour éviter au client de devoir accéder à la base de données
+								$req = $linkpdo->prepare('INSERT INTO evaluer (evaluation, nom, IdArticle) VALUES (:evaluation, :nom, :IdArticle)');
+								$req->execute(array('evaluation' => 1, 'nom' => $data->auteur, 'IdArticle' => $data->IdArticle));
+							} else {
+								$result = $req->fetch();
+								$result['evaluation'];
+								//cas où on change le dislike en like
+								if($result['evaluation'] == -1) {
+									$req = $linkpdo->prepare('UPDATE evaluer SET evaluation = :evaluation WHERE IdArticle = :IdArticle AND nom = :nom');
+									$req->execute(array('evaluation' => 1, 'IdArticle' => $data->IdArticle, 'nom' => $data->auteur));
+								//cas où l'utilisateur retire son like
+								} else {
+									//même raisonement que pour le insert plus haut
+									$req = $linkpdo->prepare('DELETE FROM evaluer WHERE IdArticle = :IdArticle  AND nom = :nom');
+									$req->execute(array('IdArticle' => $data->IdArticle, 'nom' => $data->auteur));
+								}
+							}
+						}
+						
+						//cas dislike
+						if($data->eval == "Dislike") {
+							//Ajout du dislike si l'article n'avait pas été liké ou disliké
+							if($req->rowCount() == 0) {
+								//Nous avons décidés de faire un update dans un POST pour éviter au client de devoir accéder à la base de données
+								$req = $linkpdo->prepare('INSERT INTO evaluer (evaluation, nom, IdArticle) VALUES (:evaluation, :nom, :IdArticle)');
+								$req->execute(array('evaluation' => -1, 'nom' => $data->auteur, 'IdArticle' => $data->IdArticle));
+							} else {
+								$result = $req->fetch();
+								$result['evaluation'];
+								//cas où on change le like en dislike
+								if($result['evaluation'] == 1) {
+									$req = $linkpdo->prepare('UPDATE evaluer SET evaluation = :evaluation WHERE IdArticle = :IdArticle AND nom = :nom');
+									$req->execute(array('evaluation' => -1, 'IdArticle' => $data->IdArticle, 'nom' => $data->auteur));
+								//cas où l'utilisateur retire son like
+								} else {
+									//même raisonement que pour le insert plus haut
+									$req = $linkpdo->prepare('DELETE FROM evaluer WHERE IdArticle = :IdArticle  AND nom = :nom');
+									$req->execute(array('IdArticle' => $data->IdArticle, 'nom' => $data->auteur));
+								}
+							}
+						}
+
+						$req = $linkpdo->prepare('SELECT * FROM evaluer');
+						$req->execute(array());
+						$matchingData = $req->fetchAll();
+
+						/// Envoi de la réponse au Client
+						deliver_response(201, "Evaluation ajouté", $matchingData, $authorization);
+					}
+				}
 			} else {
-				if (empty($data->IdArticle) || empty($data->auteur) || empty($data->eval)) {
-		        	deliver_response(400, "Données reçues incomplètes", NULL, $authorization);
-		    	} else {
-		    		$req = $linkpdo->prepare('SELECT * FROM evaluer WHERE IdArticle = :IdArticle AND nom = :nom');
-					$req->execute(array('IdArticle' => $data->IdArticle, 'nom' => $data->auteur));
-
-		    		//cas like
-		    		if($data->eval == "Like") {
-					    //Ajout du like si l'article n'avait pas été liké ou disliké
-					    if($req->rowCount() == 0) {
-					    	//Nous avons décidés de faire un update dans un POST pour éviter au client de devoir accéder à la base de données
-					    	$req = $linkpdo->prepare('INSERT INTO evaluer (evaluation, nom, IdArticle) VALUES (:evaluation, :nom, :IdArticle)');
-					    	$req->execute(array('evaluation' => 1, 'nom' => $data->auteur, 'IdArticle' => $data->IdArticle));
-					    } else {
-					    	$result = $req->fetch();
-					    	$result['evaluation'];
-					    	//cas où on change le dislike en like
-					    	if($result['evaluation'] == -1) {
-					    		$req = $linkpdo->prepare('UPDATE evaluer SET evaluation = :evaluation WHERE IdArticle = :IdArticle AND nom = :nom');
-                				$req->execute(array('evaluation' => 1, 'IdArticle' => $data->IdArticle, 'nom' => $data->auteur));
-                			//cas où l'utilisateur retire son like
-					    	} else {
-					    		//même raisonement que pour le insert plus haut
-					    		$req = $linkpdo->prepare('DELETE FROM evaluer WHERE IdArticle = :IdArticle  AND nom = :nom');
-                				$req->execute(array('IdArticle' => $data->IdArticle, 'nom' => $data->auteur));
-					    	}
-					    }
-		    		}
-		    		
-		    		//cas dislike
-		    		if($data->eval == "Dislike") {
-		    			//Ajout du dislike si l'article n'avait pas été liké ou disliké
-					    if($req->rowCount() == 0) {
-					    	//Nous avons décidés de faire un update dans un POST pour éviter au client de devoir accéder à la base de données
-					    	$req = $linkpdo->prepare('INSERT INTO evaluer (evaluation, nom, IdArticle) VALUES (:evaluation, :nom, :IdArticle)');
-					    	$req->execute(array('evaluation' => -1, 'nom' => $data->auteur, 'IdArticle' => $data->IdArticle));
-					    } else {
-					    	$result = $req->fetch();
-					    	$result['evaluation'];
-					    	//cas où on change le like en dislike
-					    	if($result['evaluation'] == 1) {
-					    		$req = $linkpdo->prepare('UPDATE evaluer SET evaluation = :evaluation WHERE IdArticle = :IdArticle AND nom = :nom');
-                				$req->execute(array('evaluation' => -1, 'IdArticle' => $data->IdArticle, 'nom' => $data->auteur));
-                			//cas où l'utilisateur retire son like
-					    	} else {
-					    		//même raisonement que pour le insert plus haut
-					    		$req = $linkpdo->prepare('DELETE FROM evaluer WHERE IdArticle = :IdArticle  AND nom = :nom');
-                				$req->execute(array('IdArticle' => $data->IdArticle, 'nom' => $data->auteur));
-					    	}
-					    }
-		    		}
-
-				    $req = $linkpdo->prepare('SELECT * FROM evaluer');
-				    $req->execute(array());
-				    $matchingData = $req->fetchAll();
-
-				    /// Envoi de la réponse au Client
-				    deliver_response(201, "Evaluation ajouté", $matchingData, $authorization);
-		    	}
+				deliver_response(403, "Operation non autorisée pour un utilisateur non publisher", NULL, $authorization);
 			}
-		}
 		break;
 		/// Cas de la méthode PUT
 		case "PUT" :

@@ -14,12 +14,14 @@
             // Démarage de la session et vérification de la validité du jwt s'il est stocké
             session_start();
 
+
+			// Pour les tests de l'interface utilisateur
             // unset($_SESSION['jwt']);
             // unset($_SESSION['user']);
-            if(isset($_SESSION['jwt'])) {
-                // echo $_SESSION['jwt'];
-                // echo $_SESSION['user'];
-            }
+            // if(isset($_SESSION['jwt'])) {
+            //	echo $_SESSION['jwt'];
+            //	echo $_SESSION['user'];
+            // }
             
 			// Execution après validation du form d'ajout d'article
 			if (isset($_POST['contenuNewArticle'])) {

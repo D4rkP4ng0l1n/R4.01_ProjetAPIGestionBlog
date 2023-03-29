@@ -1,9 +1,4 @@
 <?php
-	
-    // Utilisateur : Jules - Mdp : Shrek - Role : moderator
-    // Utilisateur : Kevin - Mdp : Oui - Role : publisher
-    // Utilisateur : Loic - Mdp : Mcdo - Role : publisher 
-
 
 	// Import des fonctions pour la création de token
 	include('jwt_utils.php');
