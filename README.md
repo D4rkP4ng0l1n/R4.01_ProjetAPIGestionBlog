@@ -8,8 +8,8 @@ Comptes et mots de passe pour utiliser l'application :
   - User : Loic   / Mdp : Mcdo  / Role : Publisher
 
 URLs : 
-  - APIBlog : [http://localhost/Projet-APIGestionBlog/R4.01_ProjetAPIGestionBlog/APIBlog.php](http://localhost/R4.01_ProjetAPIGestionBlog-main/APIBlog.php)
-  - APIAuthentification : [http://localhost/Projet-APIGestionBlog/R4.01_ProjetAPIGestionBlog/APIAuthentification.php](http://localhost/R4.01_ProjetAPIGestionBlog-main/APIAuthentification.php)
+  - APIBlog : http://localhost/R4.01_ProjetAPIGestionBlog-main/APIBlog.php
+  - APIAuthentification : http://localhost/R4.01_ProjetAPIGestionBlog-main/APIAuthentification.php
 
 
 Autres informations : Le client est utilisable mais non fini. Il est utilisable sous certaines conditions :
