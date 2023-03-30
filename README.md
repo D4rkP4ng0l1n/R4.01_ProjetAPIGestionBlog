@@ -18,3 +18,4 @@ Autres informations : Le client est utilisable mais non fini. Il est utilisable 
   - Les erreurs ne sont pas traités dans le client
   - Pour pouvoir faire fonctionner les requêtes avec un type de compte, il faut regénérer un token avec l'APIAuthentification et ensuite mettre à jour le Bearer dans le header de la requête
   - Nos requêtes Postman ne couvre pas l'intégralité des requêtes de notre API, nous vous invitons à utiliser notre client incomplet pour essayer de faire plus de requêtes.
+  - Pour ajouter un like ou un dislike, il faut envoyé "Like" ou "Dislike" dans le body
