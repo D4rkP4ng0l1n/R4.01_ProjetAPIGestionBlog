@@ -20,7 +20,7 @@
     $bearer_token = get_bearer_token();
 
 	// Récupération du role de l'utilisateur si il est connecté
-	if(is_jwt_valid($bearer_token)) { 
+	if($bearer_token != null && is_jwt_valid($bearer_token)) {		
 		$authorization = getAuthorization($bearer_token); 
 	} else {
 		$authorization = "anonymous";
@@ -67,7 +67,7 @@
 				//cas ajout article
 				if(isset($data->contenu) && isset($data->auteur)) {
 					if (empty($data->contenu) || empty($data->auteur)) {
-		        		deliver_response(400, "Données reçues incomplètes", NULL);
+		        		deliver_response(400, "Données reçues incomplètes (Auteur et contenu)", $data->contenu, $authorization);
 		    		} else {
 	                	$req = $linkpdo->prepare('INSERT INTO article (auteur, contenu) VALUES (:auteur, :contenu)');
 				    	$req->execute(array('auteur' => $data->auteur, 'contenu' => $data->contenu));
@@ -77,12 +77,12 @@
 				    	$matchingData = $req->fetchAll();
 
 						/// Envoi de la réponse au Client
-						deliver_response(201, "Article ajoutée", $matchingData);
+						deliver_response(201, "Article ajoutée", $matchingData, $authorization);
 					}
 				//cas like/dislike article
 				} else {
 					if (empty($data->IdArticle) || empty($data->auteur) || empty($data->eval)) {
-						deliver_response(400, "Données reçues incomplètes", NULL, $authorization);
+						deliver_response(400, "Données reçues incomplètes (Auteur, contenu et évaluation)", NULL, $authorization);
 					} else {
 						$req = $linkpdo->prepare('SELECT * FROM evaluer WHERE IdArticle = :IdArticle AND nom = :nom');
 						$req->execute(array('IdArticle' => $data->IdArticle, 'nom' => $data->auteur));
@@ -133,12 +133,16 @@
 							}
 						}
 
-						$req = $linkpdo->prepare('SELECT * FROM evaluer');
-						$req->execute(array());
-						$matchingData = $req->fetchAll();
-
-						/// Envoi de la réponse au Client
-						deliver_response(201, "Evaluation ajouté", $matchingData, $authorization);
+						if($data->eval == "Like" || $data->eval == "Dislike") {
+							$req = $linkpdo->prepare('SELECT * FROM evaluer');
+							$req->execute(array());
+							$matchingData = $req->fetchAll();
+	
+							/// Envoi de la réponse au Client
+							deliver_response(201, "Evaluation ajouté", $matchingData, $authorization);
+						} else {
+							deliver_response(400, "Evaluation reçue incorrecte", NULL, $authorization);
+						}
 					}
 				}
 			} else {
@@ -171,6 +175,9 @@
 
 						/// Envoi de la réponse au Client
 						deliver_response(200, "Article modifié", $matchingData, $authorization);
+					}
+					else {
+						deliver_response(403, "Seul l'auteur de l'article peut le modifier", NULL, $authorization);
 					}
 				}
 			} else {

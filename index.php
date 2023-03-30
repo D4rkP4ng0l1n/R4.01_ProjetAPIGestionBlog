@@ -8,8 +8,8 @@
 			// Import des fonctions pour les tokens
 			include('jwt_utils.php');
 
-			$api = 'http://localhost/Projet-APIGestionBlog/R4.01_ProjetAPIGestionBlog/APIBlog.php';
-			$apiAuth = 'http://localhost/Projet-APIGestionBlog/R4.01_ProjetAPIGestionBlog/APIAuthentification.php';
+			$api = 'http://localhost/R4.01_ProjetAPIGestionBlog-main/APIBlog.php';
+			$apiAuth = 'http://localhost/R4.01_ProjetAPIGestionBlog-main/APIAuthentification.php';
 
             // Démarage de la session et vérification de la validité du jwt s'il est stocké
             session_start();
@@ -27,7 +27,7 @@
 			if (isset($_POST['contenuNewArticle'])) {
 				////////////////// Cas de la méthode POST //////////////////
 				/// Déclaration des données à envoyer au Serveur
-				$data = array("auteur" => $_SESSION['user'], "contenu" => $_POST['contenuNewArticle']); //MODIFIER AUTEUR PAR LE NOM DE COMPTE
+				$data = array("auteur" => $_SESSION['user'], "contenu" => $_POST['contenuNewArticle']);
 				$data_string = json_encode($data);
 				/// Envoi de la requête
 				$result = file_get_contents($api,null,stream_context_create(array('http' => array('method' => 'POST', 'content' => $data_string,'header' => array('Content-Type: application/json'."\r\n".'Content-Length: '.strlen($data_string)."\r\n".'Authorization: Bearer '.$_SESSION['jwt'])))));

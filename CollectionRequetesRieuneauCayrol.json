@@ -1,0 +1,246 @@
+{
+	"info": {
+		"_postman_id": "48440b73-cb95-4a14-8d4a-fbbacc6c0575",
+		"name": "Projet R4.01",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25741994"
+	},
+	"item": [
+		{
+			"name": "POST JWT",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "//pour publisher\r\n/*\r\n{\r\n    \"user\" : \"Kévin\",\r\n    \"pwd\" : \"Oui\"\r\n}\r\n*/\r\n\r\n//pour moderator\r\n/*\r\n{\r\n    \"user\" : \"Jules\",\r\n    \"pwd\" : \"Shrek\"\r\n}\r\n*/",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost/R4.01_ProjetAPIGestionBlog-main/APIAuthentification.php",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"R4.01_ProjetAPIGestionBlog-main",
+						"APIAuthentification.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Utilisateur non authentifié",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost/R4.01_ProjetAPIGestionBlog-main/APIBlog.php",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"R4.01_ProjetAPIGestionBlog-main",
+						"APIBlog.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Moderator",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiQ2xcdTAwZTltZW50Iiwicm9sZSI6Im1vZGVyYXRvciIsImV4cCI6MTY4MDE2MDkxMX0.K5l84Mpprnmq0i4Uo-R_B-I_AsJjUILo8ch6x3RAU4E",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost/R4.01_ProjetAPIGestionBlog-main/APIBlog.php",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"R4.01_ProjetAPIGestionBlog-main",
+						"APIBlog.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE Moderator",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiQ2xcdTAwZTltZW50Iiwicm9sZSI6Im1vZGVyYXRvciIsImV4cCI6MTY4MDE2MDkxMX0.K5l84Mpprnmq0i4Uo-R_B-I_AsJjUILo8ch6x3RAU4E",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost/R4.01_ProjetAPIGestionBlog-main/APIBlog.php?id=17",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"R4.01_ProjetAPIGestionBlog-main",
+						"APIBlog.php"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "17"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Publisher",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiSnVsZXMiLCJyb2xlIjoicHVibGlzaGVyIiwiZXhwIjoxNjgwMTYyMDE1fQ.eN_7vwhoxRVI0Ms1ZuElIlSVa7IPr0-TdxF5vxoa2qM",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"auteur\" : \"Kevin\",\r\n    \"contenu\": \"testContenu\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost/R4.01_ProjetAPIGestionBlog-main/APIBlog.php",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"R4.01_ProjetAPIGestionBlog-main",
+						"APIBlog.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT Publisher",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiSnVsZXMiLCJyb2xlIjoicHVibGlzaGVyIiwiZXhwIjoxNjgwMTYyNDEzfQ.wd0C6qxom0Ju513MmqYbBCd37JxVFj7CalXa0N6Gq4Y",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"contenu\": \"modification\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost/R4.01_ProjetAPIGestionBlog-main/APIBlog.php?id=25",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"R4.01_ProjetAPIGestionBlog-main",
+						"APIBlog.php"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "25"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Publisher",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiSnVsZXMiLCJyb2xlIjoicHVibGlzaGVyIiwiZXhwIjoxNjgwMTYyNDEzfQ.wd0C6qxom0Ju513MmqYbBCd37JxVFj7CalXa0N6Gq4Y",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost/R4.01_ProjetAPIGestionBlog-main/APIBlog.php",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"R4.01_ProjetAPIGestionBlog-main",
+						"APIBlog.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Publisher (like/dislike)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiSnVsZXMiLCJyb2xlIjoicHVibGlzaGVyIiwiZXhwIjoxNjgwMTYyNDEzfQ.wd0C6qxom0Ju513MmqYbBCd37JxVFj7CalXa0N6Gq4Y",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"IdArticle\": 25,\r\n    \"auteur\": \"Jules\",\r\n    \"eval\": \"Like\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost/R4.01_ProjetAPIGestionBlog-main/APIBlog.php",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"R4.01_ProjetAPIGestionBlog-main",
+						"APIBlog.php"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
